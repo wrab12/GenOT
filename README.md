@@ -23,6 +23,25 @@ Install dependencies and the local library with `pip`.
 pip install -r requirements.txt
 ```
 This process usually takes around 5 minutes.
+
+Next, you need to install `torch` and `torch_geometric`. The installation depends on your computer's CUDA version. Please follow these steps:
+
+1. Run `nvidia-smi` to check your CUDA version.
+2. Install the appropriate version of `torch` according to your CUDA version. Refer to the official guide: [PyTorch Installation](https://pytorch.org/get-started/locally/).
+3. After installing `torch`, install `torch_geometric`.
+4. For detailed instructions, visit [PyTorch Geometric Installation Guide](https://pytorch-geometric.readthedocs.io/en/latest/notes/installation.html).
+
+Specifically, you can use the following command:
+```bash
+pip install pyg_lib torch_scatter torch_sparse torch_cluster torch_spline_conv -f https://data.pyg.org/whl/torch-${TORCH}+${CUDA}.html
+pip install torch_geometric
+```
+Replace `${TORCH}` and `${CUDA}` with your specific PyTorch and CUDA versions.
+
+For more details, see the official documentation for [PyTorch](https://pytorch.org/get-started/locally/) and [PyTorch Geometric](https://pytorch-geometric.readthedocs.io/en/latest/notes/installation.html).
+
+You also need to install R. You can download the installer and run it from the official CRAN website: https://cran.r-project.org/
+
 ## Datasets
 
 - Download all datasets from this [Google Drive link](https://drive.google.com/drive/folders/1Id4p7bpOruKgPL-sy2iT72D13P2H_w9P?usp=drive_link).
