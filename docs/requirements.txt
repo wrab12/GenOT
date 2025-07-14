@@ -1,1 +1,13 @@
 nbsphinx
+sphinx
+sphinx-autodoc-typehints
+sphinx-rtd-theme
+sphinx-rtd-size
+sphinxcontrib-applehelp
+sphinxcontrib-devhelp
+sphinxcontrib-htmlhelp
+sphinxcontrib-jsmath
+sphinxcontrib-qthelp
+sphinxcontrib-serializinghtml
+sphinx-mdinclude
+nbsphinx
