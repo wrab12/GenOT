@@ -25,7 +25,7 @@ pip install -r requirements.txt
 This process usually takes around 5 minutes.
 ## Datasets
 
-- Download datasets from this [Google Drive link](https://drive.google.com/drive/folders/1ZAr3149wxE-362TsxjATwtdRVOPClk37?usp=drive_link).
+- Download all datasets from this [Google Drive link](https://drive.google.com/drive/folders/1Id4p7bpOruKgPL-sy2iT72D13P2H_w9P?usp=drive_link).
 
 
 ## Documentation
