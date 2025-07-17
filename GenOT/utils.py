@@ -268,10 +268,7 @@ def PASTE2_align_spatial_data(
         aligned_slices[1].obsm['spatial'].copy()
     )
 
-
-
-
-
+ 
 def calculate_triangle_area(p1, p2, p3):
     """Calculates the area of a triangle given its three 2D vertices."""
     return 0.5 * abs(p1[0]*(p2[1] - p3[1]) + p2[0]*(p3[1] - p1[1]) + p3[0]*(p1[1] - p2[1]))
@@ -371,38 +368,36 @@ def adjust_area(spatial1, spatial2, area_ratio_threshold=0.8, alpha=float('inf')
 
     return spatial2_adjusted, scale_factor
 
-
-# --- ICP-like Translation Optimization ---
 def find_nearest_neighbors(source_points, target_points):
     """
     For each point in source_points, find its nearest neighbor in target_points.
     Returns the indices of nearest neighbors in target_points.
     """
-    # Efficiently compute all pairwise squared distances
-    # (source_points[:, np.newaxis, :] - target_points) creates shape (N_src, 1, 2) - (1, N_tgt, 2)
-    # which broadcasts to (N_src, N_tgt, 2)
     distances_squared = np.sum((source_points[:, np.newaxis, :] - target_points)**2, axis=2)
     nearest_neighbor_indices = np.argmin(distances_squared, axis=1)
     return nearest_neighbor_indices
 
-def icp_translate(source_points, target_points, max_iterations=100, tolerance=1e-9):
+
+def icp_align(source_points, target_points, max_iterations=100, tolerance=1e-6):
     """
-    Performs ICP-like translation optimization.
-    It iteratively finds nearest neighbors and applies a translation based on centroid alignment
-    of matched points. This version only focuses on translation.
+    Performs ICP algorithm including both rotation and translation.
 
     Parameters:
     - source_points: ndarray, Reference coordinates (e.g., spatial1), shape (n_samples1, 2)
     - target_points: ndarray, Target coordinates to align (e.g., spatial2), shape (n_samples2, 2)
     - max_iterations: int, Maximum number of ICP iterations
-    - tolerance: float, Convergence threshold based on change in translation vector magnitude
+    - tolerance: float, Convergence threshold based on change in transformation error
 
     Returns:
-    - target_points_aligned: ndarray, Translated coordinates of target_points
-    - final_translation_vector: ndarray, The total accumulated translation
+    - target_points_aligned: ndarray, Transformed coordinates of target_points
+    - final_rotation_matrix: ndarray, The total accumulated rotation matrix
+    - final_translation_vector: ndarray, The total accumulated translation vector
     """
     current_target_points = np.copy(target_points)
-    total_translation = np.array([0.0, 0.0]) # Accumulate translations
+    total_rotation_matrix = np.eye(2) # Initialize with identity matrix for 2D
+    total_translation_vector = np.array([0.0, 0.0])
+
+    prev_error = float('inf')
 
     for i in range(max_iterations):
         # Step 1: Find nearest neighbors
@@ -410,31 +405,79 @@ def icp_translate(source_points, target_points, max_iterations=100, tolerance=1e
         nearest_neighbor_indices = find_nearest_neighbors(current_target_points, source_points)
         matched_source_points = source_points[nearest_neighbor_indices]
 
-        # Step 2: Calculate centroids of matched points
+        # Step 2: Calculate centroids
         centroid_current_target = np.mean(current_target_points, axis=0)
         centroid_matched_source = np.mean(matched_source_points, axis=0)
 
-        # Step 3: Calculate translation to align centroids
-        translation_step = centroid_matched_source - centroid_current_target
+        # Step 3: Center the point sets
+        centered_current_target = current_target_points - centroid_current_target
+        centered_matched_source = matched_source_points - centroid_matched_source
 
-        # Step 4: Apply translation
-        current_target_points += translation_step
-        total_translation += translation_step
+        # Step 4: Compute the covariance matrix H
+        # H = sum(p_c * q_c.T)
+        H = np.dot(centered_current_target.T, centered_matched_source)
 
-        # Check for convergence
-        if np.linalg.norm(translation_step) < tolerance:
-            # print(f"ICP converged after {i+1} iterations.")
+        # Step 5: Perform SVD on H to find R
+        U, S, Vt = np.linalg.svd(H)
+        rotation_matrix = np.dot(Vt.T, U.T)
+
+        # Handle reflection case (if determinant is -1)
+        # This occurs if SVD computes a reflection instead of pure rotation.
+        # For 2D, if det(R) is -1, flip the sign of the last column of V.
+        if np.linalg.det(rotation_matrix) < 0:
+            Vt[-1, :] *= -1
+            rotation_matrix = np.dot(Vt.T, U.T)
+
+        # Step 6: Compute translation vector t
+        translation_vector = centroid_matched_source - np.dot(rotation_matrix, centroid_current_target)
+
+        # Step 7: Apply the transformation to current_target_points
+        current_target_points = np.dot(current_target_points, rotation_matrix.T) + translation_vector
+
+        # Accumulate total transformation (important if we want the final R and t)
+        # R_new = R_k+1 @ R_k
+        # t_new = t_k+1 + R_k+1 @ t_k
+        total_translation_vector = translation_vector + np.dot(rotation_matrix, total_translation_vector)
+        total_rotation_matrix = np.dot(rotation_matrix, total_rotation_matrix)
+
+
+        # Step 8: Check for convergence
+        # Calculate current error (RMS distance)
+        current_error = np.sqrt(np.mean(np.sum((matched_source_points - current_target_points)**2, axis=1)))
+
+        if abs(prev_error - current_error) < tolerance:
+            # print(f"ICP converged after {i+1} iterations. Error change: {abs(prev_error - current_error)}")
             break
+        prev_error = current_error
     # else:
-        # print(f"ICP reached max iterations ({max_iterations}) without converging to tolerance {tolerance}.")
+        # print(f"ICP reached max iterations ({max_iterations}) without converging to tolerance {tolerance}. Final error: {current_error}")
 
-    return current_target_points, total_translation
+    return current_target_points, total_rotation_matrix, total_translation_vector
 
+
+def align_by_centroid(spatial1, spatial2):
+    """
+    Performs initial alignment of spatial2 to spatial1 by aligning their centroids.
+
+    Parameters:
+    - spatial1: ndarray, Reference spatial coordinates, shape (n_samples1, 2)
+    - spatial2: ndarray, Target spatial coordinates to align, shape (n_samples2, 2)
+
+    Returns:
+    - spatial2_aligned: ndarray, Translated coordinates of spatial2
+    - translation_vector: ndarray, The applied translation vector
+    """
+    centroid1 = np.mean(spatial1, axis=0)
+    centroid2 = np.mean(spatial2, axis=0)
+    translation_vector = centroid1 - centroid2
+    spatial2_aligned = spatial2 + translation_vector
+    return spatial2_aligned, translation_vector
 
 def align_spatial_coords(spatial1, spatial2, area_ratio_threshold=0.9, alpha=float('inf')):
     """
-    Full alignment pipeline: area scaling followed by ICP-like translation optimization.
-    Now supports Alpha Shape area calculation and more robust translation.
+    Full alignment pipeline: area scaling, initial centroid translation,
+    followed by full ICP optimization (rotation and translation).
+    Now supports Alpha Shape area calculation and more robust alignment.
 
     Parameters:
     - spatial1: ndarray
@@ -442,7 +485,7 @@ def align_spatial_coords(spatial1, spatial2, area_ratio_threshold=0.9, alpha=flo
     - spatial2: ndarray
         Target spatial coordinates to align, shape (n_samples2, 2)
     - area_ratio_threshold: float
-        Area ratio threshold for initial scaling, default 0.8
+        Area ratio threshold for initial scaling, default 0.9
     - alpha: float
         Alpha parameter for Alpha Shape area calculation. Use float('inf') for convex hull area.
 
@@ -451,15 +494,20 @@ def align_spatial_coords(spatial1, spatial2, area_ratio_threshold=0.9, alpha=flo
         Final aligned coordinates of spatial2
     """
 
-    # Stage 1: Area scaling (remains unchanged)
+    # Stage 1: Area scaling
     spatial2_scaled, scale_factor = adjust_area(
         spatial1, spatial2, area_ratio_threshold, alpha
     )
 
-    # Stage 2: ICP-like Translation optimization
-    # spatial1 is the 'reference', spatial2_scaled is the 'moving' point set
-    spatial2_aligned, total_translation_params = icp_translate(
+    # Stage 2: Initial Centroid Translation
+    spatial2_initial_translated, initial_translation_params = align_by_centroid(
         spatial1, spatial2_scaled
+    )
+
+    # Stage 3: Full ICP (Rotation and Translation)
+    # spatial1 is the 'reference', spatial2_initial_translated is the 'moving' point set
+    spatial2_aligned, final_rotation_matrix, final_translation_vector = icp_align(
+        spatial1, spatial2_initial_translated
     )
 
     return spatial2_aligned
