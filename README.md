@@ -54,6 +54,10 @@ See detailed documentation and examples at [https:/GenOT.readthedocs.io/en/lates
 ## Acknowledgements
 We thank the developers of GraphST ([GitHub](https://github.com/JinmiaoChenLab/GraphST)), Somde ([GitHub](https://github.com/WhirlFirst/somde)), Paste2 ([GitHub](https://github.com/raphael-group/paste2)), and POT ([GitHub](https://github.com/PythonOT/POT)) for their valuable tools and resources.
 
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
 ## References
 
 
