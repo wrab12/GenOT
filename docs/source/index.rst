@@ -3,7 +3,7 @@ Welcome to GenOT's documentation!
 
 
 
-GenOT: Generative optimal transport for continuous spatiotemporal modeling of cross-platform spatial transcriptomics
+GenOT: Generative optimal transport enables spatiotemporal interpolation and generation in cross-platform spatial transcriptomics
 =====================================================================================================================================================
 
 .. toctree::
