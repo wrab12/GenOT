@@ -19,7 +19,6 @@ class Encoder():
                  adata,
                  device=torch.device('cpu'),
                  learning_rate=0.001,
-                 learning_rate_sc=0.01,
                  weight_decay=0.00,
                  epochs=700,
                  pca_n=200,
@@ -28,7 +27,6 @@ class Encoder():
                  random_seed=41,
                  alpha=10,
                  beta=1,
-                 theta=0.1,
                  lamda1=10,
                  lamda2=1,
                  datatype='10X'
@@ -43,8 +41,6 @@ class Encoder():
             Using GPU or CPU? The default is 'cpu'.
         learning_rate : float, optional
             Learning rate for ST representation learning. The default is 0.001.
-        learning_rate_sc : float, optional
-            Learning rate for scRNA representation learning. The default is 0.01.
         weight_decay : float, optional
             Weight factor to control the influence of weight parameters. The default is 0.00.
         epochs : int, optional
@@ -77,14 +73,12 @@ class Encoder():
         self.adata = adata
         self.device = device
         self.learning_rate = learning_rate
-        self.learning_rate_sc = learning_rate_sc
         self.weight_decay = weight_decay
         self.epochs = epochs
         self.pca_n = pca_n
         self.random_seed = random_seed
         self.alpha = alpha
         self.beta = beta
-        self.theta = theta
         self.lamda1 = lamda1
         self.lamda2 = lamda2
         self.datatype = datatype
