@@ -87,7 +87,7 @@ class Encoder():
 
         fix_seed(self.random_seed)
 
-        if 'highly_variable' not in adata.var.keys():
+        if not adata.uns.get('genot_preprocessed', False):
             preprocess(self.adata)
 
         if 'adj' not in adata.obsm.keys():
@@ -245,7 +245,7 @@ class DualEncoder():
         self.dual_pca_model = Dualpca
         for i, adata in enumerate([self.adata1, self.adata2]):
             # Perform basic preprocessing if not done
-            if 'highly_variable' not in adata.var.keys():
+            if not adata.uns.get('genot_preprocessed', False):
                 preprocess(adata)
 
             # Construct spatial neighborhood graph
