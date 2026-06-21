@@ -23,8 +23,8 @@ def compute_spatial_barycenter(adata1, adata2, weight1=0.5, alpha=0.5,
         tol: float, convergence threshold
 
     Returns:
-        tuple: (spatial_bary, C_bary, transport_plans) - Spatial coordinates of the computed barycenter,
-               its optimized structure matrix, and a list of optimal transport plans.
+        tuple: (spatial_bary, transport_plans) - Spatial coordinates of the computed
+               barycenter, and a list of optimal transport plans.
     """
 
     # 1. Data extraction and validation
@@ -153,7 +153,7 @@ def compute_transport_plan_lp(X, barycenter):
 
 def compute_cost_matrix(P1b_s, P1b_z, P2b_s, P2b_z):
     """
-    Compute the cost matrix generated from the transport plan according to the formula .
+    Compute the cost matrix generated from the transport plan.
     Returns a 2D cost matrix where each element represents the cost between spatial coordinates and embedded coordinates.
     """
     # Calculate pairwise Euclidean distances between two 2D transport plans
@@ -201,11 +201,11 @@ def update_embedding_barycenter(Xb_s, Xb_e, s_transport_plans, e_transport_plans
     Parameters:
     Xb_s (np.ndarray): Current spatial barycenter
     Xb_e (np.ndarray): Current embedding barycenter
-    adata1 (AnnData): Dataset 1 with spatial/embedding data
-    adata2 (AnnData): Dataset 2 with spatial/embedding data
+    s_transport_plans (list): Transport plans from spatial barycenter to each dataset
+    e_transport_plans (list): Transport plans from embedding barycenter to each dataset
 
     Returns:
-    tuple: Updated embedding and spatial barycenters
+    np.ndarray: Updated embedding barycenter
     """
 
 
