@@ -3,6 +3,47 @@
 ## Introduction
 Spatial transcriptomics (ST) technologies have revolutionized the analysis of spatial gene expression patterns within tissues. However, existing computational methods still face challenges in integrating spatial information and generating cross-heterogeneous sample data. To address this, we developed GenOT - a spatial data generation framework based on graph self-supervised contrastive learning and optimal transport theory. The framework employs a multimodal feature learning architecture to dynamically identify important genes  and hierarchically aggregate spatial neighborhood information, achieving high-precision spatial domain clustering and biologically interpretable feature extraction. The core innovation of GenOT lies in introducing an optimal transport barycenter-based interpolation algorithm, which mathematically models cross-sample spatial distribution differences to reconstruct spatiotemporal continuous gene expression dynamics. Experiments on multiple datasets including human dorsolateral prefrontal cortex (10x visium), mouse embryonic development (Stereo-seq), and olfactory bulb/hippocampal tissues (Slide-seqV2) demonstrate that GenOT significantly outperforms existing methods in spatial domain identification, cross-technology platform integration, and developmental trajectory reconstruction. This provides an innovative tool for tissue structure analysis at single-cell resolution and developmental process modeling.
 ![image](https://github.com/wrab12/GenOT/blob/main/GenOT.jpg)
+
+## Repository Structure
+
+```
+GenOT/
+├── GenOT/                  # Core Python package
+│   ├── __init__.py         # Package entry point; exports Encoder / DualEncoder / Decoder, etc.
+│   ├── genot.py            # Main classes: Encoder (single-slice representation), DualEncoder (dual-slice integration), Decoder (embedding → expression reconstruction)
+│   ├── model.py            # Network modules: K-hop aggregation (CombUnweighted), MGCN/MGCN2, Discriminator, AvgReadout
+│   ├── preprocess.py       # Preprocessing: normalization, KNN graph construction, contrastive labels, PCA features, adjacency normalization
+│   ├── OTutils.py          # Optimal transport: FGW barycenter interpolation, EMD transport plans, mapping expression back to target coordinates
+│   ├── utils.py            # Clustering (mclust/leiden, etc.), spatial alignment (PASTE2/ICP), marker-gene color alignment
+│   └── plotting.py         # Visualization functions
+│
+├── Tutorial/               # 8 Jupyter tutorials reproducing the paper's experiments
+│   ├── Tutorial 1_DLPFC.ipynb                          # Spatial domain identification (10x Visium)
+│   ├── Tutorial 2_MOSTA.ipynb                          # Spatial domain identification (Stereo-seq)
+│   ├── Tutorial 3_Mouse_Hippocampus.ipynb             # Mouse hippocampus
+│   ├── Tutorial 4_Mouse_Olfactory(...).ipynb          # Olfactory bulb (Stereo-seq & Slide-seqV2)
+│   ├── Tutorial 5_Mouse_Brain_Merge_...ipynb          # Anterior–posterior brain slice merging
+│   ├── Tutorial 6_DLPFC_interpolation.ipynb           # Spatiotemporal interpolation
+│   ├── Tutorial 7_MOSTA_integration.ipynb             # Cross-slice integration
+│   └── Tutorial 8_Diff_Tech_MOSTA_integration.ipynb   # Cross-platform integration
+│
+├── Data/                   # Data instructions (no actual data; download links only)
+│   └── README.md
+│
+├── docs/                   # Sphinx documentation source for the ReadTheDocs site
+│   ├── source/
+│   ├── Figures/
+│   └── ...
+│
+├── somde/                  # Bundled SOMDE dependency (spatially variable gene detection)
+│
+├── GenOT.jpg               # Model overview figure (referenced in README)
+├── requirements.txt        # Python dependencies
+├── readthedocs.yaml        # ReadTheDocs build configuration
+├── LICENSE                 # MIT license
+└── README.md
+```
+
 ## Environment
 First, clone and navigate to the repository.
 ```bash
