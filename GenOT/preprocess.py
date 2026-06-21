@@ -7,8 +7,6 @@ import scanpy as sc
 import scipy.sparse as sp
 import torch.nn.functional as F
 from torch.backends import cudnn
-from scipy.sparse.csc import csc_matrix
-from scipy.sparse.csr import csr_matrix
 from sklearn.neighbors import NearestNeighbors
 from sklearn.decomposition import PCA
 from scipy.sparse import csc_matrix, csr_matrix
