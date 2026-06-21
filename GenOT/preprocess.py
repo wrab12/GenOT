@@ -201,6 +201,7 @@ def preprocess(adata: 'anndata.AnnData'):
     sc.pp.log1p(adata)
     # Scale features to a max value of 10, without centering (maintains sparsity for sparse matrices)
     sc.pp.scale(adata, zero_center=False, max_value=10)
+    adata.uns['genot_preprocessed'] = True
 
 
 def get_feature(adata: 'anndata.AnnData', deconvolution: bool = False,
