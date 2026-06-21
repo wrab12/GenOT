@@ -60,5 +60,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## References
 
+Wang, R., Liu, X., Zhuo, L. et al. GenOT: generative optimal transport enables spatiotemporal interpolation and generation in cross-platform spatial transcriptomics. *Genome Biology* (2026). https://doi.org/10.1186/s13059-026-04166-z
+
 
 
