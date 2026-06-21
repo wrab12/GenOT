@@ -179,7 +179,6 @@ class DualEncoder():
         random_seed: Random seed for reproducibility
         alpha: Weight coefficient for reconstruction loss
         beta: Weight coefficient for contrastive loss
-        theta: Threshold parameter for spatial neighborhood
         datatype: Dataset type identifier ('10X', 'Stereo', etc.)
     """
 
@@ -195,7 +194,6 @@ class DualEncoder():
                  random_seed=41,
                  alpha=10,
                  beta=1,
-                 theta=0.1,
                  datatype='10X'):
         """Initialize dual encoder with datasets and parameters"""
 
@@ -210,7 +208,6 @@ class DualEncoder():
         self.random_seed = random_seed
         self.alpha = alpha
         self.beta = beta
-        self.theta = theta
         self.datatype = datatype
 
         # Ensure reproducibility
