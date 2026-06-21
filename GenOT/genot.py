@@ -44,7 +44,9 @@ class Encoder():
         weight_decay : float, optional
             Weight factor to control the influence of weight parameters. The default is 0.00.
         epochs : int, optional
-            Epoch for model training. The default is 600.
+            Epoch for model training. The default is 700.
+        pca_n : int, optional
+            Number of principal components for feature extraction. The default is 200.
         dim_input : int, optional
             Dimension of input feature. The default is 3000.
         dim_output : int, optional
