@@ -109,7 +109,7 @@ A successful run prints `[smoke] ALL PASS` and exits with code 0.
 
 ## Documentation
 
-See detailed documentation and examples at [https:/GenOT.readthedocs.io/en/latest/index.html](https://GenOT.readthedocs.io/en/latest/index.html).
+See detailed documentation and examples at [https://GenOT.readthedocs.io/en/latest/index.html](https://GenOT.readthedocs.io/en/latest/index.html).
 
 ## Acknowledgements
 We thank the developers of GraphST ([GitHub](https://github.com/JinmiaoChenLab/GraphST)), Somde ([GitHub](https://github.com/WhirlFirst/somde)), Paste2 ([GitHub](https://github.com/raphael-group/paste2)), and POT ([GitHub](https://github.com/PythonOT/POT)) for their valuable tools and resources.
