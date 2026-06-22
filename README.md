@@ -60,9 +60,9 @@ conda create -n GenOT python=3.9
 conda activate GenOT
 ```
 
-Install dependencies and the local library with `pip`.
+Install GenOT and its Python dependencies:
 ```bash
-pip install -r requirements.txt
+pip install -e .
 ```
 This process usually takes around 5 minutes.
 
