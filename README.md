@@ -100,7 +100,7 @@ cd GenOT          # repo root (the folder containing the GenOT/ package)
 python smoke_test.py
 ```
 
-A successful run prints `[smoke] ALL PASS` and exits with code 0. This is an integration sanity check, not a performance benchmark — useful for confirming a fresh install, after upgrading dependencies, or as a lightweight CI job.
+A successful run prints `[smoke] ALL PASS` and exits with code 0. 
 
 ## Datasets
 
