@@ -115,12 +115,12 @@ def qvalue(pv, pi0=None):
     else:
         # evaluate pi0 for different lambdas
         pi0 = []
-        lam = sp.arange(0, 0.90, 0.01)
-        counts = sp.array([(pv > i).sum() for i in sp.arange(0, 0.9, 0.01)])
+        lam = np.arange(0, 0.90, 0.01)  # bug fix: scipy>=1.13 removed sp.arange 
+        counts = np.array([(pv > i).sum() for i in np.arange(0, 0.9, 0.01)])
         for l in range(len(lam)):
             pi0.append(counts[l]/(m*(1-lam[l])))
 
-        pi0 = sp.array(pi0)
+        pi0 = np.array(pi0)
 
         # fit natural cubic spline
         tck = interpolate.splrep(lam, pi0, k=3)
@@ -131,7 +131,7 @@ def qvalue(pv, pi0=None):
 
     assert(pi0 >= 0 and pi0 <= 1), "pi0 is not between 0 and 1: %f" % pi0
 
-    p_ordered = sp.argsort(pv)
+    p_ordered = np.argsort(pv)
     pv = pv[p_ordered]
     qv = pi0 * m/len(pv) * pv
     qv[-1] = min(qv[-1], 1.0)
@@ -141,7 +141,7 @@ def qvalue(pv, pi0=None):
 
     # reorder qvalues
     qv_temp = qv.copy()
-    qv = sp.zeros_like(qv)
+    qv = np.zeros_like(qv)
     qv[p_ordered] = qv_temp
 
     # reshape qvalues
