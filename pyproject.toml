@@ -10,8 +10,7 @@
   license = { file = "LICENSE" }
   requires-python = ">=3.9"
   authors = [{ name = "Rui Wang" }]
-  keywords = ["spatial transcriptomics", "optimal transport", "graph contrastive
-   learning"]
+  keywords = ["spatial transcriptomics", "optimal transport", "graph contrastive learning"]
   classifiers = [
       "Programming Language :: Python :: 3.9",
       "License :: OSI Approved :: MIT License",
@@ -26,7 +25,7 @@
       "Pillow>=10",   
       "plotly>=5",             
       "POT>=0.9",
-      "rpy2>=3.5",
+      "rpy2>=3.5,<3.6",
       "scanpy>=1.10",
       "scikit-learn>=1.5",
       "scikit-image>=0.24",    
