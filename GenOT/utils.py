@@ -39,7 +39,6 @@ def mclust_R(adata, num_cluster, modelNames='EEE', used_obsm='emb_pca', random_s
     r_random_seed(random_seed)
     rmclust = robjects.r['Mclust']
 
-    res = rmclust(rpy2.robjects.numpy2ri.numpy2rpy(adata.obsm[used_obsm]), num_cluster, modelNames)
     # bug fix series for rpy2 3.5.x + R mclust 6.x:
     # (a) numpy2rpy(2D_ndarray) returns a FloatSexpVector WITHOUT a `dim`
     #     attribute, so R sees a 1D vector and Mclust fails with
