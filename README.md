@@ -46,50 +46,65 @@ GenOT/
 ```
 
 ## Environment
-First, clone and navigate to the repository.
-```bash
-git clone https://github.com/wrab12/GenOT
-cd GenOT
-```
-This process can take several minutes, depending on network speed.
 
-Create and activate a virtual environment using python 3.9 with `conda`,
-```bash
-# conda
-conda create -n GenOT python=3.9
-conda activate GenOT
-```
+  First, clone and navigate to the repository.
 
-Install GenOT and its Python dependencies:
-```bash
-pip install -e .
-```
-This process usually takes around 5 minutes.
+  ```bash
+  git clone https://github.com/wrab12/GenOT
+  cd GenOT                                          
+  ```
+  
+  Create and activate a virtual environment using python 3.9 with `conda`:
 
-Next, you need to install `torch` and `torch_geometric`. The installation depends on your computer's CUDA version. Please follow these steps:
+  ```bash
+  conda create -n GenOT python=3.9
+  conda activate GenOT
+  ```
+  
+  Install **R + mclust** *first* — rpy2's build step needs R headers, so this must happen before `pip
+   install`. The conda-forge route works on Linux / macOS / Windows without sudo:
 
-1. Run `nvidia-smi` to check your CUDA version.
-2. Install the appropriate version of `torch` according to your CUDA version. Refer to the official guide: [PyTorch Installation](https://pytorch.org/get-started/locally/).
-3. After installing `torch`, install `torch_geometric`.
-4. For detailed instructions, visit [PyTorch Geometric Installation Guide](https://pytorch-geometric.readthedocs.io/en/latest/notes/installation.html).
+  ```bash
+  conda install -c conda-forge r-base r-mclust
+  ```
+  
+  (If you prefer system R from [CRAN](https://cran.r-project.org/), install it now and then run
+  `install.packages("mclust")` inside R.)
 
-Specifically, you can use the following command:
-```bash
-pip install pyg_lib torch_scatter torch_sparse torch_cluster torch_spline_conv -f https://data.pyg.org/whl/torch-${TORCH}+${CUDA}.html
-pip install torch_geometric
-```
-Replace `${TORCH}` and `${CUDA}` with your specific PyTorch and CUDA versions.
+  Install **somoclu** from conda-forge — the pip wheel may ship without the compiled library:
+  
+  ```bash
+  conda install -c conda-forge somoclu
+  ```                                               
 
-For more details, see the official documentation for [PyTorch](https://pytorch.org/get-started/locally/) and [PyTorch Geometric](https://pytorch-geometric.readthedocs.io/en/latest/notes/installation.html).
+  Install GenOT and its Python dependencies:
+                                                    
+  ```bash
+  pip install -e .
+  ```
 
-You also need to install R from the official [CRAN website](https://cran.r-project.org/), then install the `mclust` package inside R:
-```r
-install.packages("mclust")
-```
-The SOMDE-based gene selection also requires `somoclu`, which should be installed from conda-forge (the pip wheel may lack the compiled library):
-```bash
-conda install -c conda-forge somoclu
-```
+  This process usually takes around 5 minutes.
+  
+  Next, install `torch` and `torch_geometric`. The installation depends on your CUDA version. Please
+  follow these steps:
+
+  1. Run `nvidia-smi` to check your CUDA version.
+  2. Install the appropriate version of `torch` (see the [PyTorch installation 
+  guide](https://pytorch.org/get-started/locally/)).
+  3. After installing `torch`, install `torch_geometric` (see the [PyG installation 
+  guide](https://pytorch-geometric.readthedocs.io/en/latest/notes/installation.html)).
+  
+  A known-working combination on CUDA 12.1 is:
+
+  ```bash
+  pip install torch==2.4.0 torchvision==0.19.0 torchaudio==2.4.0 \
+      --index-url https://download.pytorch.org/whl/cu121
+  pip install pyg_lib torch_scatter torch_sparse torch_cluster torch_spline_conv \
+      -f https://data.pyg.org/whl/torch-2.4.0+cu121.html
+  pip install torch_geometric   
+  ```
+
+  Replace `2.4.0` / `cu121` with your own torch + CUDA combination if needed.
 
 ## Testing
 
