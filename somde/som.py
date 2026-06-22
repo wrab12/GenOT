@@ -1,5 +1,5 @@
 import somoclu
-
+from scipy import stats
 from .util import *
 
 class SomNode:
