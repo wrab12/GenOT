@@ -40,6 +40,28 @@ def mclust_R(adata, num_cluster, modelNames='EEE', used_obsm='emb_pca', random_s
     rmclust = robjects.r['Mclust']
 
     res = rmclust(rpy2.robjects.numpy2ri.numpy2rpy(adata.obsm[used_obsm]), num_cluster, modelNames)
+    # bug fix series for rpy2 3.5.x + R mclust 6.x:
+    # (a) numpy2rpy(2D_ndarray) returns a FloatSexpVector WITHOUT a `dim`
+    #     attribute, so R sees a 1D vector and Mclust fails with
+    #     "Error in dimnames(x) <- dn :
+    #      length of 'dimnames' [2] not equal to array extent".
+    # (b) Even with a manually built R matrix, calling rmclust(...) via
+    #     rpy2's Function wrapper surfaces Mclust's internal dimnames
+    #     warning as a fatal RRuntimeError. Evaluating "Mclust(...)" as an
+    #     R expression string lets that warning stay non-fatal and Mclust
+    #     returns a valid result.
+    # (c) The R variable name cannot start with double underscore
+    #     (R parse error), so use `mclust_input` rather than `__mclust_data`.
+    arr2d = np.ascontiguousarray(adata.obsm[used_obsm], dtype=np.float64)
+    n_obs, n_feat = arr2d.shape
+    r_mat = robjects.r['matrix'](
+        robjects.FloatVector(arr2d.flatten(order='F')),  # R is column-major
+        nrow=n_obs, ncol=n_feat,
+    )
+    robjects.globalenv['mclust_input'] = r_mat
+    robjects.r('set.seed(%d)' % random_seed)
+    res = robjects.r('Mclust(mclust_input, G=%d, modelNames="%s")'
+                    % (num_cluster, modelNames))
     mclust_res = np.array(res[-2])
 
     adata.obs['mclust'] = mclust_res
