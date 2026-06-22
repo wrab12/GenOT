@@ -144,7 +144,6 @@ class Encoder():
             self.loss_feat = F.mse_loss(self.features, self.emb)
 
             loss = self.alpha * self.loss_feat + self.beta * (self.loss_sl_1 + self.loss_sl_2)
-            # loss = self.alpha * self.loss_feat
             self.optimizer.zero_grad()
             loss.backward()
             self.optimizer.step()
