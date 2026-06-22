@@ -281,7 +281,7 @@ def create_mapped_adata(
 
     return ad.AnnData(
         X=mapped_X,
-        obs=source_adata.obs.copy(),
+        obs=target_adata.obs.copy(),
         var=source_adata.var.copy(),
         obsm={spatial_key: target_adata.obsm[spatial_key].copy()},
         uns={},
