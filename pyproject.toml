@@ -1,0 +1,47 @@
+[build-system]
+  requires = ["setuptools>=64", "wheel"]
+  build-backend = "setuptools.build_meta"
+  
+  [project]
+  name = "GenOT"
+  version = "0.1.0"
+  description = "Generative optimal transport for spatial transcriptomics"
+  readme = "README.md"
+  license = { file = "LICENSE" }
+  requires-python = ">=3.9"
+  authors = [{ name = "Rui Wang" }]
+  keywords = ["spatial transcriptomics", "optimal transport", "graph contrastive
+   learning"]
+  classifiers = [
+      "Programming Language :: Python :: 3.9",
+      "License :: OSI Approved :: MIT License",
+      "Operating System :: OS Independent",
+  ]
+  dependencies = [
+      "anndata>=0.10",
+      "matplotlib>=3.6",
+      "numpy>=1.23,<2",
+      "pandas>=2",
+      "paste2>=1.0",
+      "Pillow>=10",   
+      "plotly>=5",             
+      "POT>=0.9",
+      "rpy2>=3.5",
+      "scanpy>=1.10",
+      "scikit-learn>=1.5",
+      "scikit-image>=0.24",    
+      "scipy>=1.9,<1.14",
+      "seaborn>=0.13",
+      "tqdm>=4.66",
+      "igraph>=0.11",
+      "leidenalg>=0.10", 
+  ]
+
+
+  [project.urls]
+  Homepage = "https://github.com/wrab12/GenOT"
+  Documentation = "https://genot.readthedocs.io"
+
+  [tool.setuptools.packages.find]
+  include = ["GenOT*", "somde*"]
+  exclude = ["Tutorial*", "Data*", "docs*", "tests*"]
