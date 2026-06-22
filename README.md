@@ -39,6 +39,7 @@ GenOT/
 │
 ├── GenOT.jpg               # Model overview figure (referenced in README)
 ├── requirements.txt        # Python dependencies
+├── smoke_test.py           # End-to-end integration smoke test on synthetic data
 ├── readthedocs.yaml        # ReadTheDocs build configuration
 ├── LICENSE                 # MIT license
 └── README.md
@@ -81,7 +82,25 @@ Replace `${TORCH}` and `${CUDA}` with your specific PyTorch and CUDA versions.
 
 For more details, see the official documentation for [PyTorch](https://pytorch.org/get-started/locally/) and [PyTorch Geometric](https://pytorch-geometric.readthedocs.io/en/latest/notes/installation.html).
 
-You also need to install R. You can download the installer and run it from the official CRAN website: https://cran.r-project.org/
+You also need to install R from the official [CRAN website](https://cran.r-project.org/), then install the `mclust` package inside R:
+```r
+install.packages("mclust")
+```
+The SOMDE-based gene selection also requires `somoclu`, which should be installed from conda-forge (the pip wheel may lack the compiled library):
+```bash
+conda install -c conda-forge somoclu
+```
+
+## Testing
+
+After setting up the environment, verify your installation with the included smoke test. It runs both main GenOT pipelines (spatial domain identification and spatiotemporal interpolation) end-to-end on a small synthetic dataset in about a minute, and exits non-zero if anything is broken.
+
+```bash
+cd GenOT          # repo root (the folder containing the GenOT/ package)
+python smoke_test.py
+```
+
+A successful run prints `[smoke] ALL PASS` and exits with code 0. This is an integration sanity check, not a performance benchmark — useful for confirming a fresh install, after upgrading dependencies, or as a lightweight CI job.
 
 ## Datasets
 
